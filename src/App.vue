@@ -3,8 +3,10 @@ import { useLocalStorage } from "@vueuse/core"
 
 import TextArea from "@/components/TextArea.vue";
 import SearchTerm from "@/components/SearchTerm.vue";
+import ToggleButton from "@/components/ToggleButton.vue";
 
 const KEY = {
+    SHOW_INPUT: "SHOW_INPUT",
     AUDIENCE_NAMES: "AUDIENCE_NAMES",
     TERMS_OF_ART: "TERMS_OF_ART",
     PRODUCTS: "PRODUCTS",
@@ -13,6 +15,7 @@ const KEY = {
     CLICKED_TERMS: "CLICKED_TERMS",
 } as const;
 
+const showInputs = useLocalStorage(KEY.SHOW_INPUT, true);
 const audienceNames = useLocalStorage(KEY.AUDIENCE_NAMES, "elixir developer, elixir dev");
 const termsOfArt = useLocalStorage(KEY.TERMS_OF_ART, "TDD, MVC");
 const products = useLocalStorage(KEY.PRODUCTS, "Phoenix, Phoenix LiveView");
@@ -71,7 +74,10 @@ generateTerms();
 
 <template>
     <main class="min-h-screen bg-gray-50 p-8 space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="absolute right-0 top-0 m-2">
+            <ToggleButton v-model="showInputs" />
+        </div>
+        <div v-if="showInputs" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TextArea id="audienceNames" name="Audience names:" v-model="audienceNames" />
             <TextArea id="termsOfArt" name="Terms of art:" v-model="termsOfArt" />
             <TextArea id="products" name="Products:" v-model="products" />
@@ -80,16 +86,23 @@ generateTerms();
                 <button type="button"
                     class="block text-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 w-full"
                     @click="generateTerms">
-                    Generate terms
+                    Regenerate terms
                 </button>
             </div>
         </div>
 
 
         <div class="grid gap-2 bg-white p-3 border border-gray-600 shadow-md rounded-md">
-            <div class=" text-center ">
+            <div class="text-center relative">
                 <h2 class="text-xl leading-tight ">Terms</h2>
                 <p class="text-sm text-gray-500">Click to open in Google</p>
+                <div v-if="!showInputs" class="absolute right-0 top-0 mr-4">
+                    <button type="button"
+                        class="block text-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 w-full"
+                        @click="generateTerms">
+                        Regenerate terms
+                    </button>
+                </div>
             </div>
             <hr class="border-black -mx-3">
             <SearchTerm v-for="term in terms" :key="term" :term="term" :clickedTerms="clickedTerms"
