@@ -4,6 +4,8 @@ import { useLocalStorage } from "@vueuse/core"
 import TextArea from "@/components/TextArea.vue";
 import SearchTerm from "@/components/SearchTerm.vue";
 import ToggleButton from "@/components/ToggleButton.vue";
+import RegenerateButton from "@/components/RegenerateButton.vue";
+import ArrowPath from "@/components/ArrowPath.vue";
 
 const KEY = {
     SHOW_INPUT: "SHOW_INPUT",
@@ -73,35 +75,28 @@ generateTerms();
 </script>
 
 <template>
-    <main class="min-h-screen bg-gray-50 p-8 space-y-6">
-        <div class="absolute right-0 top-0 m-2">
-            <ToggleButton v-model="showInputs" />
-        </div>
+    <main class="min-h-screen bg-gray-50 p-2 md:p-8 space-y-6">
         <div v-if="showInputs" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TextArea id="audienceNames" name="Audience names:" v-model="audienceNames" />
             <TextArea id="termsOfArt" name="Terms of art:" v-model="termsOfArt" />
             <TextArea id="products" name="Products:" v-model="products" />
             <TextArea id="wateringHoleKeywords" name="Watering hole keywords:" v-model="wateringHoleKeywords" />
-            <div class="md:col-span-2">
-                <button type="button"
-                    class="block text-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 w-full"
-                    @click="generateTerms">
-                    Regenerate terms
-                </button>
+            <div class="md:col-span-2 flex items-center justify-center gap-4">
+                <ToggleButton v-model="showInputs" />
+                <RegenerateButton @click="generateTerms" />
             </div>
         </div>
 
 
         <div class="grid gap-2 bg-white p-3 border border-gray-600 shadow-md rounded-md">
-            <div class="text-center relative">
-                <h2 class="text-xl leading-tight ">Terms</h2>
-                <p class="text-sm text-gray-500">Click to open in Google</p>
-                <div v-if="!showInputs" class="absolute right-0 top-0 mr-4">
-                    <button type="button"
-                        class="block text-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 w-full"
-                        @click="generateTerms">
-                        Regenerate terms
-                    </button>
+            <div class="flex items-center " :class="showInputs ? 'justify-center' : 'justify-between'">
+                <div :class="showInputs ? 'text-center' : 'text-left'">
+                    <h2 class="text-xl leading-tight ">Terms</h2>
+                    <p class="text-sm text-gray-500">Click to open in Google</p>
+                </div>
+                <div v-if="!showInputs" class="flex items-center gap-2">
+                    <ToggleButton v-model="showInputs" />
+                    <RegenerateButton @click="generateTerms" />
                 </div>
             </div>
             <hr class="border-black -mx-3">
